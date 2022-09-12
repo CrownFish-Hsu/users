@@ -7,6 +7,7 @@ import (
 
 var (
 	queryInsertUser = "insert into users(`first_name`, `last_name`, `email`, `password`) values (?, ?, ?, ?);"
+	queryGetUserByEmail = "select id, first_name, last_name, email, password from users where email = ?;"
 )
 
 func (user *User) Save() *errors.RestErr {
@@ -28,5 +29,22 @@ func (user *User) Save() *errors.RestErr {
 	}
 
 	user.Id = uid
+	return nil
+}
+
+func (user *User) GetByEmail() *errors.RestErr {
+	stmt, err := users_db.Client.Prepare(queryGetUserByEmail)
+	if err != nil {
+		return errors.NewInternalServeError("invalid email")
+	}
+
+	defer stmt.Close()
+
+	result := stmt.QueryRow(user.Email)
+	getErr := result.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.Password)
+	if getErr != nil {
+		return errors.NewInternalServeError("db search error")
+	}
+
 	return nil
 }
