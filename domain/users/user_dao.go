@@ -6,9 +6,9 @@ import (
 )
 
 var (
-	queryInsertUser = "insert into users(`first_name`, `last_name`, `email`, `password`) values (?, ?, ?, ?);"
+	queryInsertUser     = "insert into users(`first_name`, `last_name`, `email`, `password`) values (?, ?, ?, ?);"
 	queryGetUserByEmail = "select id, first_name, last_name, email, password from users where email = ?;"
-	queryGetUserById = "select id, first_name, last_name, email from users where id = ?;"
+	queryGetUserById    = "select id, first_name, last_name, email from users where id = ?;"
 )
 
 func (user *User) Save() *errors.RestErr {
@@ -24,7 +24,7 @@ func (user *User) Save() *errors.RestErr {
 		return errors.NewInternalServeError("db stmt error, " + err.Error())
 	}
 
-	uid, err:= res.LastInsertId()
+	uid, err := res.LastInsertId()
 	if err != nil {
 		return errors.NewInternalServeError("db last id error, " + err.Error())
 	}

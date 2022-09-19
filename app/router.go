@@ -2,7 +2,7 @@ package app
 
 import "blog/controller/users"
 
-func mapUrls()  {
+func mapUrls() {
 	route.POST("/api/register", users.Register)
 
 	route.POST("/api/login", users.Login)
