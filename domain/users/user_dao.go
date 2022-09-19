@@ -8,6 +8,7 @@ import (
 var (
 	queryInsertUser = "insert into users(`first_name`, `last_name`, `email`, `password`) values (?, ?, ?, ?);"
 	queryGetUserByEmail = "select id, first_name, last_name, email, password from users where email = ?;"
+	queryGetUserById = "select id, first_name, last_name, email from users where id = ?;"
 )
 
 func (user *User) Save() *errors.RestErr {
@@ -42,6 +43,23 @@ func (user *User) GetByEmail() *errors.RestErr {
 
 	result := stmt.QueryRow(user.Email)
 	getErr := result.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.Password)
+	if getErr != nil {
+		return errors.NewInternalServeError("db search error")
+	}
+
+	return nil
+}
+
+func (user *User) GetById() *errors.RestErr {
+	stmt, err := users_db.Client.Prepare(queryGetUserById)
+	if err != nil {
+		return errors.NewInternalServeError("invalid id")
+	}
+
+	defer stmt.Close()
+
+	result := stmt.QueryRow(user.Id)
+	getErr := result.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email)
 	if getErr != nil {
 		return errors.NewInternalServeError("db search error")
 	}

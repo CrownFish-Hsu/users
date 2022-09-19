@@ -7,7 +7,7 @@ func mapUrls()  {
 
 	route.POST("/api/login", users.Login)
 
-	//route.GET("/api/user", users.Get)
+	route.GET("/api/user", users.Get)
 
-	//route.GET("/api/logout", users.logout)
+	route.POST("/api/logout", users.Logout)
 }
